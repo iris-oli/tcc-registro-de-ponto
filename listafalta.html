@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabela Editável</title>
+    <link rel="stylesheet" href="CSS/lista.css">
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+            text-align: center;
+        }
+        .add-row-btn {
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+
+<h2>Faltas, Férias e Faltas</h2>
+
+<table id="funcionariosTable">
+    <thead>
+        <tr>
+            <th>Nome do Funcionário</th>
+            <th>Data</th>
+            <th>Motivo</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Linhas serão adicionadas aqui pelo JavaScript -->
+    </tbody>
+</table>
+
+<button class="add-row-btn" onclick="addRow()">Adicionar Linha</button>
+
+<script>
+    // Função para carregar os dados da tabela do LocalStorage
+    function loadTableData() {
+        const tableData = JSON.parse(localStorage.getItem('tableData')) || [];
+        const tbody = document.getElementById('funcionariosTable').querySelector('tbody');
+        tbody.innerHTML = ''; // Limpa a tabela
+
+        tableData.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td contenteditable="true">${row.nome}</td>
+                <td contenteditable="true">${row.data}</td>
+                <td contenteditable="true">${row.motivo}</td>
+                <td><button onclick="deleteRow(${index})">Excluir</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Função para salvar os dados da tabela no LocalStorage
+    function saveTableData() {
+        const tbody = document.getElementById('funcionariosTable').querySelector('tbody');
+        const rows = tbody.querySelectorAll('tr');
+        const tableData = [];
+
+        rows.forEach(row => {
+            const nome = row.cells[0].textContent;
+            const data = row.cells[1].textContent;
+            const motivo = row.cells[2].textContent;
+            tableData.push({ nome, data, motivo });
+        });
+
+        localStorage.setItem('tableData', JSON.stringify(tableData));
+    }
+
+    // Função para adicionar uma nova linha editável à tabela
+    function addRow() {
+        const tbody = document.getElementById('funcionariosTable').querySelector('tbody');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td contenteditable="true">Nome</td>
+            <td contenteditable="true">Data</td>
+            <td contenteditable="true">Motivo</td>
+            <td><button onclick="deleteRow(${tbody.children.length})">Excluir</button></td>
+        `;
+        tbody.appendChild(tr);
+        saveTableData(); // Salva imediatamente após adicionar
+    }
+
+    // Função para excluir uma linha da tabela
+    function deleteRow(index) {
+        const tableData = JSON.parse(localStorage.getItem('tableData')) || [];
+        tableData.splice(index, 1); // Remove o item do array
+        localStorage.setItem('tableData', JSON.stringify(tableData)); // Salva o novo array
+        loadTableData(); // Recarrega a tabela
+    }
+
+    // Salva a tabela sempre que o usuário faz mudanças
+    document.getElementById('funcionariosTable').addEventListener('input', saveTableData);
+
+    // Carrega a tabela ao carregar a página
+    window.onload = loadTableData;
+</script>
+
+<a href="pag1.html" class="hidden-back-btn">Voltar</a>
+
+</body>
+</html>

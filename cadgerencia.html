@@ -1,0 +1,40 @@
+<div class="wrapper">
+  <div class="login-text">
+    <button class="cta"><i><fas fa-chevron-down fa-1x> </i></button>
+    <div class="text">
+      <link rel="stylesheet" href="CSS/log.css">
+      <a href="">Login</a>
+      <hr>
+      <br>
+      <input type="text" id="username" placeholder="Username">
+      <br>
+      <input type="password" id="password" placeholder="Password">
+      <br>
+      <button class="login-btn" onclick="login()">Log In</button>
+   
+    </div>
+  </div>
+  <div class="call-text">
+    <h1>sistema de ponto <span>QrCode</span> </h1>
+  </div>
+  <script src="JS/log.js"></script>
+  <script>
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Senha fixa
+      const fixedUsername = '123';
+      const fixedPassword = '123';
+
+      if (username === fixedUsername && password === fixedPassword) {
+        alert('Login bem-sucedido!');
+        window.location.href = "pag1.html";
+     
+        
+      } else {
+        alert('Nome de usuário ou senha incorretos.');
+      }
+    }
+  </script>
+</div>

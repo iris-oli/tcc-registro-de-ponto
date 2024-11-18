@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registros de Horário</title>
+      <!--("css")da tabela-->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <!--tabela--> 
+    <h1>Registros de Horário</h1>
+    <table id="logTable">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Horário</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <button onclick="window.close()">Fechar</button>
+
+    <script>
+        window.onload = function() {
+            const logData = JSON.parse(localStorage.getItem('logEntries')) || [];
+            const tableBody = document.getElementById('logTable').getElementsByTagName('tbody')[0];
+
+            logData.forEach(entry => {
+                const row = tableBody.insertRow();
+                const cellStatus = row.insertCell(0);
+                const cellTime = row.insertCell(1);
+                cellStatus.textContent = entry.status;
+                cellTime.textContent = entry.time;
+            });
+        }
+    </script>
+</body>
+</html>

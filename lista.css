@@ -1,0 +1,121 @@
+/* Estilo global */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f8f6fb;
+    color: #333;
+}
+
+/* Cabeçalho */
+h2 {
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Tabela */
+table {
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+th, td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background-color: #8B57D9;
+    color: white;
+    font-weight: bold;
+}
+
+td {
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+td[contenteditable="true"] {
+    background-color: #fefefe;
+    outline: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+td[contenteditable="true"]:focus {
+    background-color: #ecddf7;
+}
+
+/* Botões */
+.add-row-btn, .delete-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #8B57D9;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.add-row-btn:hover, .delete-btn:hover {
+    background-color: #8B57D9;
+}
+
+/* Estilo dos botões de exclusão na tabela */
+td button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    color: #fff;
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+td button:hover {
+    background-color: #c0392b;
+}
+
+/* Efeito de hover nas linhas da tabela */
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.hidden-back-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #f2f2f2;
+    font-size: 0.8rem;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    background-color: #ad8bf3;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.hidden-back-btn:hover {
+    background-color: #773bf0;
+    color: white;
+}
+
+

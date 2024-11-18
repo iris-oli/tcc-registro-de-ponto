@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/acesso.css">
+    <a href="ponto.html"></a>
+
+    <title>Acesso</title>
+</head>
+<body>
+    <header>
+        <img src="IMG/caixalogo.png" alt="Logo" class="header-img" />
+    </header>
+    
+    <section class="section-form">
+        <form id="login-form">
+            <h1 class="titulo">Acesso</h1>
+            <label class="campos"><h1>Login</h1></label>
+            <input type="text" id="email" class="tbox" required><br>
+            <span class="error-message" id="emailError">Campo obrigatório</span>
+            <label class="campos"><h1>Senha</h1></label>
+            <input type="password" id="senha" class="tbox" required><br>
+            <span class="error-message" id="senhaError">Campo obrigatório</span>
+            <br><br>
+            <button type="button" id="loginBtn" class="button">Acessar</button>
+            <button type="button" id="forgotPasswordBtn" class="button">Esqueci a Senha</button>
+        </form>
+
+    </section>
+
+    <div class="container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-auth.js"></script> 
+
+    <div id="popup" class="popup-container">
+        <div class="popup-content">
+            <h2>Recuperação de Senha</h2>
+            <p>Coloque seu código de protocolo para ser redirecionado à página de recuperação:</p>
+            <input type="text" id="protocolCode" class="tbox" placeholder="Código de Protocolo" required>
+            <button type="button" id="validateBtn" class="button">Validar</button>
+            <button type="button" id="closePopupBtn" class="button2">Fechar</button>
+
+            <script>
+                var firebaseConfig = {
+                    apiKey: "AIzaSyDrxhtmRbMdyrlHfF6ecHBD4RkdaAvRsqE",
+                    authDomain: "tcc-qrcode-1e936.firebaseapp.com",
+                    databaseURL: "https://tcc-qrcode-1e936-default-rtdb.firebaseio.com",
+                    projectId: "tcc-qrcode-1e936",
+                    storageBucket: "tcc-qrcode-1e936.appspot.com",
+                    messagingSenderId: "647339303822",
+                    appId: "1:647339303822:web:718d72a0bfc313b7b3fadf"
+                };
+
+                const app = firebase.initializeApp(firebaseConfig);
+                const auth = firebase.auth(); 
+        
+                document.getElementById('loginBtn').addEventListener('click', function() {
+                    const email = document.getElementById('email').value;
+                    const senha = document.getElementById('senha').value;
+        
+                    auth.signInWithEmailAndPassword(email, senha)
+                    .then((userCredential) => {
+                        window.location.href = "presenca.html"
+                    });
+                });
+            </script>
+
+        </div>
+    </div>
+    <script src="JS/acesso.js"></script>
+    <script src="JS/popupacesso.js"></script>
+</body>
+</html>

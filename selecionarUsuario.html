@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Funcionário</title>
+    <style>
+       /* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilo do corpo e do título */
+body {
+    background-color: #f8f5fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: #333;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #333;
+    margin: 20px;
+    text-align: center;
+}
+
+/* Estilo da tabela */
+table {
+    width: 60%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 20px auto;
+}
+
+th, td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+    color: #555;
+}
+
+th {
+    background-color: #8B57D9;
+    color: #fff;
+    font-weight: 600;
+}
+
+td {
+    background-color: #f9f9f9;
+}
+
+tr:hover td {
+    background-color: #ebe0f3;
+}
+
+/* Estilo do botão de selecionar */
+.select-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #8B57D9;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.select-btn:hover {
+    background-color: #8B57D9;
+}
+
+/* Efeito nas células ao passar o mouse */
+tbody tr:hover {
+    background-color: #f1f5f8;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    table {
+        width: 90%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center">Selecionar Funcionário</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- Os dados serão inseridos aqui -->
+        </tbody>
+    </table>
+
+    <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-database.js"></script>
+
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyDrxhtmRbMdyrlHfF6ecHBD4RkdaAvRsqE",
+            authDomain: "tcc-qrcode-1e936.firebaseapp.com",
+            databaseURL: "https://tcc-qrcode-1e936-default-rtdb.firebaseio.com",
+            projectId: "tcc-qrcode-1e936",
+            storageBucket: "tcc-qrcode-1e936.appspot.com",
+            messagingSenderId: "647339303822",
+            appId: "1:647339303822:web:718d72a0bfc313b7b3fadf"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const userTableBody = document.getElementById('userTableBody');
+
+        // Função para carregar os usuários do Firebase e exibir na tabela
+        function loadUsers() {
+            const usersRef = database.ref('users');
+            usersRef.once('value', function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    const userData = childSnapshot.val();
+                    const userId = childSnapshot.key;
+                    const newRow = document.createElement('tr');
+                    
+                    const emailCell = document.createElement('td');
+                    emailCell.textContent = userData.email;
+                    newRow.appendChild(emailCell);
+
+                    // Cria a célula do botão de selecionar
+                    const actionCell = document.createElement('td');
+                    const selectButton = document.createElement('button');
+                    selectButton.textContent = 'Selecionar';
+                    selectButton.classList.add('select-btn');
+                    selectButton.addEventListener('click', function() {
+                        window.location.href = "config.html?userId=" + userId;  // Redireciona para a página de edição
+                    });
+                    actionCell.appendChild(selectButton);
+                    newRow.appendChild(actionCell);
+
+                    userTableBody.appendChild(newRow);
+                });
+            });
+        }
+
+        // Chama a função para carregar os usuários quando a página for carregada
+        window.onload = loadUsers;
+    </script>
+</body>
+</html>

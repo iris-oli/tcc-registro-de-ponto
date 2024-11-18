@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+</head>
+<body>
+    <header>
+        <div class="icon-box">
+            <img src="IMG/caixalogo.png" alt="Ícone" style="width: 100%; height: 100%;"/>
+        </div>
+    </header>
+    <!--Hamburguer-->
+    <nav class="menu">
+        <input type="checkbox" class="menu-faketrigger">
+        <div class="menu-lines">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul>
+            <br><br><br>
+            <li><img src="IMG/perfil.png"><a href="cadastrarfunci.html">cadastro</a></li> 
+            <li><img src="IMG/escrevendo.png"><a href="config.html">sistema de ponto</a></li>  
+            <li><img src="IMG/feriados.png"><a href="">ausência e férias</a></li>  
+            <li><img src="IMG/senha.png"><a href="">info.funcionario</a></li>  
+            <br><br><br><br><br><br><br><br><br>
+            <li><img src="IMG/seta.png"><a href="pag1.html">voltar</a></li>   
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="main-content">
+            <!-- Marcações Hoje -->
+            <div class="marcacoes-hoje">
+                <h3>EDITAR HORÁRIOS DO USUÁRIO</h3>
+                <form id="horariosForm">
+                    <label for="entrada" style="margin-right: 50px;">Horário de Entrada:</label>
+                    <input type="time" id="entrada" required><br><br>
+                    
+                    <label for="cafe_inicio" style="margin-right: 85px;">Início do Café:</label>
+                    <input type="time" id="cafe_inicio" required><br><br>
+                    
+                    <label for="cafe_fim" style="margin-right: 95px;">Fim do Café:</label>
+                    <input type="time" id="cafe_fim" required><br><br>
+                    
+                    <label for="almoco_inicio" style="margin-right: 65px;">Início do Almoço:</label>
+                    <input type="time" id="almoco_inicio" required><br><br>
+                    
+                    <label for="almoco_fim" style="margin-right: 75px;">Fim do Almoço:</label>
+                    <input type="time" id="almoco_fim" required><br><br>
+                    
+                    <label for="saida" style="margin-right: 60px;">Horário de Saída:</label>
+                    <input type="time" id="saida" required><br><br>
+            
+                    <button type="button" id="salvarBtn">Salvar Horários</button>
+                </form>
+            
+                <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-database.js"></script>
+            
+                <script>
+                    // Configuração Firebase
+                    var firebaseConfig = {
+                        apiKey: "AIzaSyDrxhtmRbMdyrlHfF6ecHBD4RkdaAvRsqE",
+                        authDomain: "tcc-qrcode-1e936.firebaseapp.com",
+                        databaseURL: "https://tcc-qrcode-1e936-default-rtdb.firebaseio.com",
+                        projectId: "tcc-qrcode-1e936",
+                        storageBucket: "tcc-qrcode-1e936.appspot.com",
+                        messagingSenderId: "647339303822",
+                        appId: "1:647339303822:web:718d72a0bfc313b7b3fadf"
+                    };
+                    const app = firebase.initializeApp(firebaseConfig);
+                    const database = firebase.database();
+            
+                    // Obter o userId da URL
+                    const userId = new URLSearchParams(window.location.search).get('userId');
+            
+     // Função para salvar os horários no Firebase
+    document.getElementById('salvarBtn').addEventListener('click', function() {
+        const entrada = document.getElementById('entrada').value;
+        const cafeInicio = document.getElementById('cafe_inicio').value;
+        const cafeFim = document.getElementById('cafe_fim').value;
+        const almocoInicio = document.getElementById('almoco_inicio').value;
+        const almocoFim = document.getElementById('almoco_fim').value;
+        const saida = document.getElementById('saida').value;
+
+        if (entrada && cafeInicio && cafeFim && almocoInicio && almocoFim && saida) {
+            const horariosRef = database.ref('users/' + userId + '/horarios');
+            horariosRef.set({
+                entrada: entrada,
+                cafe_inicio: cafeInicio,
+                cafe_fim: cafeFim,
+                almoco_inicio: almocoInicio,
+                almoco_fim: almocoFim,
+                saida: saida,
+                data: new Date().toISOString().split('T')[0] // A data também é salva
+            }).then(() => {
+                alert('Horários salvos com sucesso!');
+                atualizarEscalaHoje(entrada, cafeInicio, cafeFim, almocoInicio, almocoFim, saida);
+            }).catch(error => {
+                alert('Erro ao salvar os horários: ' + error.message);
+            });
+        } else {
+            alert('Preencha todos os campos.');
+        }
+    });
+            
+                    // Função para atualizar a escala de hoje
+                    function atualizarEscalaHoje(entrada, cafeInicio, cafeFim, almocoInicio, almocoFim, saida) {
+                        document.querySelector('.schedule').innerHTML = `
+                            <p>
+                                <span>${entrada}</span>
+                                <span>${cafeInicio}</span>
+                                <span><img src="IMG/copo de café.png" alt="icon"/></span>
+                                <span>${cafeFim}</span>
+                                <span>${almocoInicio}</span>
+                                <span><img src="IMG/almoco.png" alt="icon"/></span>
+                                <span>${almocoFim}</span>
+                                <span>${saida}</span>
+                            </p>
+                        `;
+                    }
+            
+                    // Carregar horários ao carregar a página
+                    window.onload = function() {
+                        const horariosRef = database.ref('users/' + userId + '/horarios');
+                        horariosRef.once('value').then(snapshot => {
+                            if (snapshot.exists()) {
+                                const horarios = snapshot.val();
+                                atualizarEscalaHoje(
+                                    horarios.entrada,
+                                    horarios.cafe_inicio,
+                                    horarios.cafe_fim,
+                                    horarios.almoco_inicio,
+                                    horarios.almoco_fim,
+                                    horarios.saida
+                                );
+                                // Preenche os campos com os dados recuperados
+                                document.getElementById('entrada').value = horarios.entrada;
+                                document.getElementById('cafe_inicio').value = horarios.cafe_inicio;
+                                document.getElementById('cafe_fim').value = horarios.cafe_fim;
+                                document.getElementById('almoco_inicio').value = horarios.almoco_inicio;
+                                document.getElementById('almoco_fim').value = horarios.almoco_fim;
+                                document.getElementById('saida').value = horarios.saida;
+                            }
+                        }).catch(error => {
+                            console.log("Erro ao carregar horários:", error.message);
+                        });
+                    };
+                </script>
+            </div>
+
+            <!-- Escala de Hoje -->
+            <div class="escala-hoje">
+                <h3>ESCALA DE HOJE</h3>
+                <p>Horário Esperado</p>
+                <br>
+                <div class="schedule">
+                    <p> <!-- será preenchido pelo script --> </p>
+                </div>
+            </div>
+            
+            <button class="back-btn"><a href="listaponto.html">VOLTAR PARA A LISTA</a></button>
+        </div>
+    </main>
+
+    <script src="JS/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/cadastrarfunc.css">
+    <title>Cadastro</title>
+</head>
+<body>
+    <header>
+        <img src="IMG/caixalogo.png" alt="Logo" class="header-img" />
+    </header>
+    
+    <section class="section-form">
+        <form id="cadastro-form">
+            <h1 class="titulo">Cadastrar Funcionário</h1>
+            <label class="campos"><h1>Email</h1></label>
+            <input type="text" id="email" class="tbox" required><br>
+            <span class="error-message" id="emailError">Campo obrigatório</span>
+            <label class="campos"><h1>Senha</h1></label>
+            <input type="password" id="senha" class="tbox" required><br>
+            <span class="error-message" id="senhaError">Campo obrigatório</span>
+            <br><br>
+            <button type="button" id="cadastrarBtn" class="button">Cadastrar</button>
+        </form>
+    </section>
+
+    <script type="module">
+        // Importando os módulos necessários do Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js';
+        import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js';
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrxhtmRbMdyrlHfF6ecHBD4RkdaAvRsqE",
+            authDomain: "tcc-qrcode-1e936.firebaseapp.com",
+            databaseURL: "https://tcc-qrcode-1e936-default-rtdb.firebaseio.com",
+            projectId: "tcc-qrcode-1e936",
+            storageBucket: "tcc-qrcode-1e936.appspot.com",
+            messagingSenderId: "647339303822",
+            appId: "1:647339303822:web:718d72a0bfc313b7b3fadf"
+        };
+
+        // Inicializando o Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        document.getElementById('cadastrarBtn').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            if (email && senha) {
+                // Verifica se o e-mail já está cadastrado
+                fetchSignInMethodsForEmail(auth, email)
+                    .then((signInMethods) => {
+                        if (signInMethods.length > 0) {
+                            alert('Este e-mail já está cadastrado.');
+                        } else {
+                            // Cadastra o usuário no Firebase Authentication
+                            createUserWithEmailAndPassword(auth, email, senha)
+                                .then((userCredential) => {
+                                    const user = userCredential.user;
+                                    // Adiciona os dados do usuário no Realtime Database
+                                    set(ref(database, 'users/' + user.uid), {
+                                        email: email,
+                                        senha: senha
+                                    }).then(() => {
+                                        alert('Usuário cadastrado com sucesso!');
+                                    }).catch((error) => {
+                                        alert('Erro ao cadastrar no Database: ' + error.message);
+                                    });
+                                })
+                                .catch((error) => {
+                                    alert('Erro ao cadastrar no Authentication: ' + error.message);
+                                });
+                        }
+                    })
+                    .catch((error) => {
+                        alert('Erro ao verificar e-mail: ' + error.message);
+                    });
+            } else {
+                alert('Preencha todos os campos.');
+            }
+        });
+    </script>
+</body>
+</html>
